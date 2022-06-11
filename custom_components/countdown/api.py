@@ -19,7 +19,7 @@ class CountdownApi:
             "x-localz-deviceid": "8AACD7E1-B75E-4F15-912C-47BA3222C079",
             "x-localz-cnc-sdk-ver": "4.3.1"
         }
-        response = requests.get(self._url_base + "/" + self._customer_id + "/orders?includeCompleted=false", headers=headers, auth=HTTPBasicAuth('M3YwdQlhHfM8hIZMulUv9QTDlpg4T6BXL5Br6000', 'd71SUBJCbQRr3h5hYv9b8oN0l6kGBTuCyIY8uI5r'))
+        response = requests.get(self._url_base + "/" + self._customer_id + "/orders?includeCompleted=true", headers=headers, auth=HTTPBasicAuth('M3YwdQlhHfM8hIZMulUv9QTDlpg4T6BXL5Br6000', 'd71SUBJCbQRr3h5hYv9b8oN0l6kGBTuCyIY8uI5r'))
         data = {}
         if response.status_code == requests.codes.ok:
             data = response.json()
