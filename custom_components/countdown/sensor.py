@@ -58,6 +58,7 @@ class CountdownDeliveriesSensor(Entity):
         self._state = ""
         self._state_attributes = {}
         self._unit_of_measurement = None
+        self._unique_id = DOMAIN
         self._api = api
 
     @property
@@ -84,6 +85,11 @@ class CountdownDeliveriesSensor(Entity):
     def unit_of_measurement(self):
         """Return the unit of measurement."""
         return self._unit_of_measurement
+
+    @property
+    def unique_id(self):
+        """Return the unique id."""
+        return self._unique_id
     
     def update(self):
         _LOGGER.debug('Checking login validity')
