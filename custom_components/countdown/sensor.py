@@ -101,20 +101,23 @@ class CountdownDeliveriesSensor(Entity):
             if response['orders']:
                 _LOGGER.warning(response['orders'])
                 for order in response['orders']:
+                    # Delivery statuses
                     if order['orderStatus'] == 'PENDING':
-                        self._state = "Preparing order"
+                        self._state = "Out for delivery"
+                    elif order['orderStatus'] == 'ASSIGNED':
+                        self._state = "Arriving"
+                    elif order['orderStatus'] == 'COMPLETE':
+                        self._state = "Delivered"
+                    # Not sure if this is used for delivery
+                    elif order['orderStatus'] == 'FAILEDCOMPLETE':
+                        self._state = "Delivery failed"
+                    # Not sure if these are used (maybe for pickup?)
                     elif order['orderStatus'] == 'READY':
                         self._state = "Order ready"
                     elif order['orderStatus'] == 'UNASSIGNED':
                         self._state = "Waiting for driver to be assigned"
                     elif order['orderStatus'] == 'OMW':
                         self._state = "Driver on way"
-                    elif order['orderStatus'] == 'ASSIGNED':
-                        self._state = "Driver has been assigned"
-                    elif order['orderStatus'] == 'COMPLETE':
-                        self._state = "Delivered"
-                    elif order['orderStatus'] == 'FAILEDCOMPLETE':
-                        self._state = "Delivery failed"
                     else:
                         self._state = "Unknown orderStatus (" + order['orderStatus'] + ")"
                     
@@ -123,6 +126,6 @@ class CountdownDeliveriesSensor(Entity):
                     self._state_attributes['Pickup Start'] = order['pickupStart']
                     self._state_attributes['Pickup End'] = order['pickupEnd']
             else:
-                self._state = "No orders"
+                self._state = "None"
         else:
             _LOGGER.error('Unable to log in')
