@@ -99,7 +99,7 @@ class CountdownDeliveriesSensor(Entity):
             data = []
             response = self._api.get_deliveries()
             if response['orders']:
-                _LOGGER.warning(response['orders'])
+                _LOGGER.debug(response['orders'])
                 for order in response['orders']:
                     # Delivery statuses
                     if order['orderStatus'] == 'PENDING':
