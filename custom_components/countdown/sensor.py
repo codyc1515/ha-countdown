@@ -54,7 +54,7 @@ async def async_setup_platform(hass, config, async_add_entities,
 class CountdownDeliveriesSensor(Entity):
     def __init__(self, name, api):
         self._name = name
-        self._icon = "mdi:truck"
+        self._icon = "mdi:truck-delivery"
         self._state = ""
         self._state_attributes = {}
         self._unit_of_measurement = None
