@@ -12,7 +12,7 @@ class CountdownApi:
         self._api_token = token
         self._customer_id = ''
         self._url_base = 'https://au-api-cnc.localz.io/v1/projects/M3YwdQlhHfM8hIZMulUv9QTDlpg4T6BXL5Br6000/customers'
-            
+
     def get_deliveries(self):
         headers = {
             "x-localz-chanid": "ios",
@@ -35,12 +35,12 @@ class CountdownApi:
         if self._customer_id:
             _LOGGER.debug('Login is valid')
             return True
-        else: 
+        else:
             if self.login() == False:
                 _LOGGER.debug(result.text)
                 return False
             return True
-        
+
     def login(self):
         """Login to the Countdown API."""
         result = False
@@ -59,7 +59,7 @@ class CountdownApi:
             self._customer_id = jsonResult['customerId']
             _LOGGER.debug('Successfully logged in')
             self.get_deliveries()
-            result = True           
+            result = True
         else:
             _LOGGER.error(loginResult.text)
         return result

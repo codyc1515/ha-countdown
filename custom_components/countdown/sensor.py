@@ -42,7 +42,7 @@ SCAN_INTERVAL = timedelta(minutes=5)
 async def async_setup_platform(hass, config, async_add_entities,
                                discovery_info=None):
     token = config.get(CONF_TOKEN)
-    
+
     api = CountdownApi(token)
 
     _LOGGER.debug('Setting up sensor(s)...')
@@ -90,7 +90,7 @@ class CountdownDeliveriesSensor(Entity):
     def unique_id(self):
         """Return the unique id."""
         return self._unique_id
-    
+
     def update(self):
         _LOGGER.debug('Checking login validity')
         if self._api.check_auth():
@@ -103,29 +103,32 @@ class CountdownDeliveriesSensor(Entity):
                 for order in response['orders']:
                     # Delivery statuses
                     if order['orderStatus'] == 'PENDING':
+                        self._state = "Received"
+                    elif order['orderStatus'] == 'UNASSIGNED':
                         self._state = "Out for delivery"
                     elif order['orderStatus'] == 'ASSIGNED':
                         self._state = "Arriving"
                     elif order['orderStatus'] == 'COMPLETE':
                         self._state = "Delivered"
+
                     # Not sure if this is used for delivery
                     elif order['orderStatus'] == 'FAILEDCOMPLETE':
                         self._state = "Delivery failed"
+
                     # Not sure if these are used (maybe for pickup?)
                     elif order['orderStatus'] == 'READY':
                         self._state = "Order ready"
-                    elif order['orderStatus'] == 'UNASSIGNED':
-                        self._state = "Waiting for driver to be assigned"
                     elif order['orderStatus'] == 'OMW':
                         self._state = "Driver on way"
                     else:
                         self._state = "Unknown orderStatus (" + order['orderStatus'] + ")"
-                    
+
                     self._state_attributes['Order Number'] = order['orderNumber']
                     self._state_attributes['Order Date'] = order['orderDate']
                     self._state_attributes['Pickup Start'] = order['pickupStart']
                     self._state_attributes['Pickup End'] = order['pickupEnd']
             else:
                 self._state = "None"
+                _LOGGER.debug('Found no orders on refresh')
         else:
             _LOGGER.error('Unable to log in')
