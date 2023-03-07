@@ -1,0 +1,13 @@
+{
+	"config": {
+		"step": {
+			"user": {
+				"title": "Countdown Online Shopping",
+				"description": "Obtain your Localz.io token from the app.",
+				"data": {
+					"access_token": "Access Token"
+				}
+			}
+		}
+	}
+}

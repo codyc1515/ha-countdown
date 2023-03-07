@@ -5,9 +5,11 @@ import logging
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
+from homeassistant.core import HomeAssistant
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_ACCESS_TOKEN
 from homeassistant.helpers.entity import Entity
+from homeassistant.config_entries import ConfigEntry
 
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -34,22 +36,39 @@ If you have any issues with this you need to open an issue here:
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(CONF_TOKEN): cv.string,
+    vol.Required(CONF_ACCESS_TOKEN): cv.string
 })
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities
+):
+    config = hass.data[DOMAIN][config_entry.entry_id]
+    token = config[CONF_ACCESS_TOKEN]
+    
+    api = CountdownApi(token)
+    
+    sensors = []
+    sensors .append(CountdownDeliveriesSensor(SENSOR_NAME, api))
+    async_add_entities(sensors, update_before_add=True)
+
+
 async def async_setup_platform(hass, config, async_add_entities,
                                discovery_info=None):
-    token = config.get(CONF_TOKEN)
+    token = config.get(CONF_ACCESS_TOKEN)
 
     api = CountdownApi(token)
 
-    _LOGGER.debug('Setting up sensor(s)...')
+    _LOGGER.debug('Setting up sensor(s) from yaml...')
 
     sensors = []
     sensors .append(CountdownDeliveriesSensor(SENSOR_NAME, api))
     async_add_entities(sensors, True)
+
 
 class CountdownDeliveriesSensor(Entity):
     def __init__(self, name, api):
